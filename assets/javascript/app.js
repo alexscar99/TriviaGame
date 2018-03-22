@@ -76,6 +76,7 @@ $(document).ready(function() {
     })
   ];
 
+  // set default global variables
   var amtCorrect = 0;
 
   var amtWrong = 0;
@@ -84,53 +85,9 @@ $(document).ready(function() {
 
   var currentQuestion = 0;
 
+  var questionTimer = 11;
+
   var questionInterval;
-
-  var questionTimer = 10;
-
-  function decrementQuestion() {
-    if (questionTimer === 0) {
-      currentQuestion++;
-      amtAnswered++;
-    } else {
-      $('#time-remaining').text(questionTimer);
-      questionTimer--;
-    }
-  }
-
-  function startQuestion() {
-    questionInterval = setInterval(decrementQuestion, 1000);
-  }
-
-  function stopQuestion() {
-    $('#time-remaining').empty();
-    clearInterval(questionInterval);
-  }
-
-  // second interval for answer display
-  var responseInterval;
-  var responseTimer = 5;
-
-  function decrementResponse() {
-    if (responseTimer === 0) {
-      responseTimer = 5;
-      $('.main-content').empty();
-      showQuestions();
-    } else {
-      responseTimer--;
-      $('#time-remaining').text(responseTimer);
-    }
-  }
-
-  function startResponse() {
-    responseInterval = setInterval(decrementResponse, 1000);
-  }
-
-  function stopResponse() {
-    $('#time-remaining').text('');
-    $('#images').empty();
-    clearInterval(responseInterval);
-  }
 
   // start game by clicking button
   $('#start-game').click(function() {
@@ -139,8 +96,10 @@ $(document).ready(function() {
   });
 
   var showQuestions = function() {
+    // end response display
     stopResponse();
 
+    // as long as there are still questions:
     if (currentQuestion < 8) {
       // show question
       startQuestion();
@@ -157,15 +116,18 @@ $(document).ready(function() {
           .append(buttons)
           .append('<br>');
       }
+      // if any of the answer choices are clicked:
       $('.answer').click(function() {
         var userGuess = this.value;
+        // stop question, reset timer
         stopQuestion();
-        questionTimer = 10;
+        questionTimer = 11;
         var correctAnswer =
           triviaGame[currentQuestion].choices[
             triviaGame[currentQuestion].answer
           ];
 
+        // conditional to check if the user's guess is right or wrong, display appropriate response
         if (userGuess === correctAnswer) {
           $('.main-content').empty();
           $('#question').text('Correct! The right answer was ' + correctAnswer);
@@ -188,6 +150,65 @@ $(document).ready(function() {
     }
   };
 
+  // start counter for question
+  var startQuestion = function() {
+    questionInterval = setInterval(decrementQuestion, 1000);
+  };
+
+  // count down question timer until it hits 0, then stop question, reset timer
+  var decrementQuestion = function() {
+    if (questionTimer === 0) {
+      stopQuestion();
+      questionTimer = 11;
+      var correctAnswer =
+        triviaGame[currentQuestion].choices[triviaGame[currentQuestion].answer];
+      $('.main-content').empty();
+      $('#question').text(
+        'You ran out of time! The right answer was ' + correctAnswer
+      );
+      displayResponse();
+      currentQuestion++;
+    } else if (questionTimer > 0) {
+      questionTimer--;
+      $('#time-remaining').text(questionTimer);
+    }
+  };
+
+  // clear question counter
+  var stopQuestion = function() {
+    $('#time-remaining').text('');
+    clearInterval(questionInterval);
+  };
+
+  // second interval for answer display
+  var responseInterval;
+  var responseTimer = 6;
+
+  // start counter for answer display
+  var startResponse = function() {
+    responseInterval = setInterval(decrementResponse, 1000);
+  };
+
+  // lower response counter by 1 until 0, then show next question
+  var decrementResponse = function() {
+    if (responseTimer === 0) {
+      responseTimer = 6;
+      $('.main-content').empty();
+      showQuestions();
+    } else {
+      responseTimer--;
+      $('#time-remaining').text(responseTimer);
+    }
+  };
+
+  // clear response counter
+  var stopResponse = function() {
+    $('#time-remaining').text('');
+    $('#images').empty();
+    clearInterval(responseInterval);
+  };
+
+  // show image for current question
   var displayResponse = function() {
     if (currentQuestion <= 8) {
       var responseImg = $('<img>');
@@ -200,6 +221,7 @@ $(document).ready(function() {
     }
   };
 
+  // end the game and show the final score to the player
   var endGame = function() {
     $('.main-content').empty();
     $('#images').append(
