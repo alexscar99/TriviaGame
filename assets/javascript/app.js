@@ -1,24 +1,11 @@
 $(document).ready(function() {
-  // set timer to 30
-  var timer = 30;
-
-  // keep user's score
-  var amtCorrect = 0;
-
-  var amtWrong = 0;
-
-  var amtAnswered = 0;
-
-  // keep track of questions and answers
-  var answers = [];
-
-  var currentQuestion = 0;
-
+  // array with 8 different objects, with props for each question
   var triviaGame = [
     (questionOne = {
       question: 'What is the capital of Ireland?',
       answer: 2,
-      choices: ['Cork', 'Wexford', 'Dublin', 'Galway']
+      choices: ['Cork', 'Wexford', 'Dublin', 'Galway'],
+      img: 'assets/images/dublin.jpg'
     }),
     (questionTwo = {
       question: 'Who was the 3rd President of the United States?',
@@ -28,7 +15,8 @@ $(document).ready(function() {
         'John Adams',
         'James Madison',
         'Ben Franklin'
-      ]
+      ],
+      img: 'assets/images/thomas-jefferson.jpg'
     }),
     (questionThree = {
       question: 'Who directed the movie "Inception"?',
@@ -38,7 +26,8 @@ $(document).ready(function() {
         'Christopher Nolan',
         'Quentin Tarantino',
         'J.J. Abrams'
-      ]
+      ],
+      img: 'assets/images/christopher-nolan.jpg'
     }),
     (questionFour = {
       question: 'Who won the SuperBowl this year?',
@@ -48,12 +37,14 @@ $(document).ready(function() {
         'New England Patriots',
         'Pittsburgh Steelers',
         'Philadelphia Eagles'
-      ]
+      ],
+      img: 'assets/images/eagles-superbowl.jpg'
     }),
     (questionFive = {
       question: 'What color IS NOT on the British flag?',
       answer: 0,
-      choices: ['Green', 'White', 'Red', 'Blue']
+      choices: ['Green', 'White', 'Red', 'Blue'],
+      img: 'assets/images/british-flag.png'
     }),
     (questionSix = {
       question: 'Who starred in the movie "Rocky"?',
@@ -63,7 +54,8 @@ $(document).ready(function() {
         'Sylvester Stallone',
         'Robert DeNiro',
         'George Clooney'
-      ]
+      ],
+      img: 'assets/images/sylvester-stallone-rocky.jpg'
     }),
     (questionSeven = {
       question: 'What NBA team won the NBA Championship in 2017?',
@@ -73,128 +65,154 @@ $(document).ready(function() {
         'Boston Celtics',
         'Cleveland Cavaliers',
         'Golden State Warriors'
-      ]
+      ],
+      img: 'assets/images/warriors-logo.jpg'
     }),
     (questionEight = {
       question: 'Which of these WAS NOT one of the original 13 colonies?',
       answer: 2,
-      choices: ['New Jersey', 'Pennsylvania', 'Florida', 'Georgia']
+      choices: ['New Jersey', 'Pennsylvania', 'Florida', 'Georgia'],
+      img: 'assets/images/florida.jpg'
     })
   ];
 
-  var correctAnswer = triviaGame[currentQuestion].answer;
+  var amtCorrect = 0;
 
-  var hide = function(element) {
-    $(element).css('visibility', 'hidden');
-  };
+  var amtWrong = 0;
 
-  var display = function(element) {
-    $(element).css('visibility', 'visibile');
-  };
+  var amtAnswered = 0;
 
-  var clear = function() {
-    $('#game-start').empty();
-  };
+  var currentQuestion = 0;
 
-  var startGame = function() {
-    counter = setInterval(timeRemaining, 1000);
-    $('#game-start').empty();
-    showQuestion();
-  };
+  var questionInterval;
 
-  var showQuestion = function() {
-    display('#time-remaining');
-    if (currentQuestion <= 7) {
-      $('#question').html(
-        '<h2>' + triviaGame[currentQuestion].question + '</h2>'
-      );
-      answers = triviaGame[currentQuestion].choices;
-      display('.answer');
-      for (var i = 0; i < answers.length; i++) {
-        $('#answer' + i).html('<h3>' + answers[i] + '</h3>');
+  var questionTimer = 10;
+
+  function decrementQuestion() {
+    if (questionTimer === 0) {
+      currentQuestion++;
+      amtAnswered++;
+    } else {
+      $('#time-remaining').text(questionTimer);
+      questionTimer--;
+    }
+  }
+
+  function startQuestion() {
+    questionInterval = setInterval(decrementQuestion, 1000);
+  }
+
+  function stopQuestion() {
+    $('#time-remaining').empty();
+    clearInterval(questionInterval);
+  }
+
+  // second interval for answer display
+  var responseInterval;
+  var responseTimer = 5;
+
+  function decrementResponse() {
+    if (responseTimer === 0) {
+      responseTimer = 5;
+      $('.main-content').empty();
+      showQuestions();
+    } else {
+      responseTimer--;
+      $('#time-remaining').text(responseTimer);
+    }
+  }
+
+  function startResponse() {
+    responseInterval = setInterval(decrementResponse, 1000);
+  }
+
+  function stopResponse() {
+    $('#time-remaining').text('');
+    $('#images').empty();
+    clearInterval(responseInterval);
+  }
+
+  // start game by clicking button
+  $('#start-game').click(function() {
+    $('#start-game').hide();
+    showQuestions();
+  });
+
+  var showQuestions = function() {
+    stopResponse();
+
+    if (currentQuestion < 8) {
+      // show question
+      startQuestion();
+      $('#question').text(triviaGame[currentQuestion].question);
+      var answers = triviaGame[currentQuestion].choices;
+      // show answer choices by creating buttons
+      for (i = 0; i < 4; i++) {
+        var buttons = $('<button>');
+        buttons.text(answers[i]);
+        buttons.attr('value', answers[i]);
+        buttons.attr('id', 'button' + i);
+        buttons.attr('class', 'answer');
+        $('#answer-choices')
+          .append(buttons)
+          .append('<br>');
       }
+      $('.answer').click(function() {
+        var userGuess = this.value;
+        stopQuestion();
+        questionTimer = 10;
+        var correctAnswer =
+          triviaGame[currentQuestion].choices[
+            triviaGame[currentQuestion].answer
+          ];
+
+        if (userGuess === correctAnswer) {
+          $('.main-content').empty();
+          $('#question').text('Correct! The right answer was ' + correctAnswer);
+          amtCorrect++;
+          amtAnswered++;
+          displayResponse();
+          currentQuestion++;
+        } else {
+          $('.main-content').empty();
+          $('#question').text('Wrong! The right answer was ' + correctAnswer);
+          amtWrong++;
+          amtAnswered++;
+          displayResponse();
+          currentQuestion++;
+        }
+      });
+    } else {
+      $('.main-content').empty();
+      endGame();
+    }
+  };
+
+  var displayResponse = function() {
+    if (currentQuestion <= 8) {
+      var responseImg = $('<img>');
+      responseImg.attr('src', triviaGame[currentQuestion].img);
+      responseImg.attr('width', '650px');
+      $('#images').append(responseImg);
+      startResponse();
     } else {
       endGame();
     }
   };
 
-  // var showAnswers = function() {
-  //   $('#answer-choices').html(triviaGame[currentQuestion].choices);
-  // };
-
-  var nextQuestion = function() {
-    clearInterval();
-    timer = 30;
-    $('#response-message').empty();
-  };
-
-  var timeRemaining = function() {
-    timer--;
-    $('#time-remaining').html('<h2>Time Remaining: ' + timer + ' Seconds');
-    if (timer === 0) {
-      showAnswers();
-    }
-  };
-
-  var stop = function() {
-    clearInterval(counter);
-  };
-
   var endGame = function() {
-    // show results at end
+    $('.main-content').empty();
+    $('#images').append(
+      '<h2>Your Score:</h2>' +
+        '<p>Questions Answered: ' +
+        amtAnswered +
+        '</p>' +
+        '<p>Questions Correct: ' +
+        amtCorrect +
+        '</p>' +
+        '<p>Questions Wrong: ' +
+        amtWrong +
+        '</p>'
+    );
   };
-
-  $('button').click(function() {
-    startGame();
-    timeRemaining();
-  });
-
-  $('.answer').click(function() {
-    var answerChosen = $(this);
-    var value = answerChosen.attr('value');
-    var correctAnswer = triviaGame[currentQuestion].answer;
-
-    if (value == correctAnswer) {
-      amtAnswered++;
-      amtCorrect++;
-      currentQuestion++;
-      $('#question').empty();
-      hide('#time-remaining');
-      //hide('#answer-choices');
-      $('#response-message').html(
-        '<h2>You are correct!</h2>' +
-          '<br>' +
-          '<h3>The correct answer was ' +
-          answers[correctAnswer] +
-          '.'
-      );
-      setInterval(nextQuestion, 5000);
-      setInterval(showQuestion, 5000);
-      display('#time-remaining');
-      //display('#answer-choices');
-
-      timer = 30;
-    } else {
-      amtWrong++;
-      amtAnswered++;
-      currentQuestion++;
-      timer = 30;
-      $('#question').empty();
-      //hide('#answer-choices');
-      hide('#time-remaining');
-      $('#response-message').html(
-        '<h2>You are wrong!</h2>' +
-          '<br>' +
-          '<h3>The correct answer was ' +
-          answers[correctAnswer] +
-          '.'
-      );
-      setInterval(nextQuestion, 3000);
-      setInterval(showQuestion, 3000);
-      //setInterval(showAnswers, 3000);
-      //display('#time-remaining');
-      //display('#answer-choices');
-      timer = 30;
-    }
-  });
 });
