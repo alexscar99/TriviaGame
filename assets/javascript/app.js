@@ -103,6 +103,7 @@ $(document).ready(function() {
   };
 
   var showQuestion = function() {
+    display('#time-remaining');
     if (currentQuestion <= 7) {
       $('#question').html(
         '<h2>' + triviaGame[currentQuestion].question + '</h2>'
@@ -117,9 +118,9 @@ $(document).ready(function() {
     }
   };
 
-  var showAnswers = function() {
-    $('#answer-choices').html(triviaGame[currentQuestion].choices);
-  };
+  // var showAnswers = function() {
+  //   $('#answer-choices').html(triviaGame[currentQuestion].choices);
+  // };
 
   var nextQuestion = function() {
     clearInterval();
@@ -157,9 +158,9 @@ $(document).ready(function() {
       amtAnswered++;
       amtCorrect++;
       currentQuestion++;
-      $('#answer-choices').empty();
       $('#question').empty();
-      hide($('#time-remaining'));
+      hide('#time-remaining');
+      //hide('#answer-choices');
       $('#response-message').html(
         '<h2>You are correct!</h2>' +
           '<br>' +
@@ -167,10 +168,10 @@ $(document).ready(function() {
           answers[correctAnswer] +
           '.'
       );
-      setInterval(nextQuestion, 3000);
-      setInterval(showQuestion, 3000);
-      setInterval(showAnswers, 3000);
-      display($('#time-remaining'));
+      setInterval(nextQuestion, 5000);
+      setInterval(showQuestion, 5000);
+      display('#time-remaining');
+      //display('#answer-choices');
 
       timer = 30;
     } else {
@@ -178,9 +179,9 @@ $(document).ready(function() {
       amtAnswered++;
       currentQuestion++;
       timer = 30;
-      $('#answer-choices').empty();
       $('#question').empty();
-      hide($('#time-remaining'));
+      //hide('#answer-choices');
+      hide('#time-remaining');
       $('#response-message').html(
         '<h2>You are wrong!</h2>' +
           '<br>' +
@@ -190,8 +191,9 @@ $(document).ready(function() {
       );
       setInterval(nextQuestion, 3000);
       setInterval(showQuestion, 3000);
-      setInterval(showAnswers, 3000);
-      display($('#time-remaining'));
+      //setInterval(showAnswers, 3000);
+      //display('#time-remaining');
+      //display('#answer-choices');
       timer = 30;
     }
   });
