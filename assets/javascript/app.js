@@ -82,6 +82,8 @@ $(document).ready(function() {
     })
   ];
 
+  var correctAnswer = triviaGame[currentQuestion].answer;
+
   var hide = function(element) {
     $(element).css('visibility', 'hidden');
   };
@@ -122,6 +124,7 @@ $(document).ready(function() {
   var nextQuestion = function() {
     clearInterval();
     timer = 30;
+    $('#response-message').empty();
   };
 
   var timeRemaining = function() {
@@ -137,7 +140,7 @@ $(document).ready(function() {
   };
 
   var endGame = function() {
-    // show results
+    // show results at end
   };
 
   $('button').click(function() {
@@ -150,28 +153,46 @@ $(document).ready(function() {
     var value = answerChosen.attr('value');
     var correctAnswer = triviaGame[currentQuestion].answer;
 
-    if (value === correctAnswer) {
+    if (value == correctAnswer) {
+      amtAnswered++;
+      amtCorrect++;
+      currentQuestion++;
       $('#answer-choices').empty();
       $('#question').empty();
-      $('#answer').html(
-        '<h2>You are correct!' +
+      hide($('#time-remaining'));
+      $('#response-message').html(
+        '<h2>You are correct!</h2>' +
           '<br>' +
           '<h3>The correct answer was ' +
           answers[correctAnswer] +
           '.'
       );
-      setInterval(nextQuestion, 5000);
-      amtAnswered++;
-      amtCorrect++;
-      currentQuestion++;
-      showQuestion();
+      setInterval(nextQuestion, 3000);
+      setInterval(showQuestion, 3000);
+      setInterval(showAnswers, 3000);
+      display($('#time-remaining'));
+
+      timer = 30;
     } else {
       amtWrong++;
       amtAnswered++;
       currentQuestion++;
       timer = 30;
+      $('#answer-choices').empty();
       $('#question').empty();
-      showQuestion();
+      hide($('#time-remaining'));
+      $('#response-message').html(
+        '<h2>You are wrong!</h2>' +
+          '<br>' +
+          '<h3>The correct answer was ' +
+          answers[correctAnswer] +
+          '.'
+      );
+      setInterval(nextQuestion, 3000);
+      setInterval(showQuestion, 3000);
+      setInterval(showAnswers, 3000);
+      display($('#time-remaining'));
+      timer = 30;
     }
   });
 });
