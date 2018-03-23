@@ -29,7 +29,7 @@ img {
   text-align: center;
   opacity: 0.75;
   font-size: 50px;
-  margin-top: 85px;
+  margin-top: 110px;
   text-shadow: 0 1px 0 white, 0 -1px 0 white, 1px 0 0 white, -1px 0 0 white;
 }
 
@@ -98,11 +98,16 @@ img {
 #final-score h2 {
   font-size: 50px;
   color: #3cf;
-  margin-bottom: 25px;
+  margin-bottom: 65px;
   text-shadow: 0 1px 0 white, 0 -1px 0 white, 1px 0 0 white, -1px 0 0 white;
 }
 
 #final-score p {
   font-size: 35px;
   color: #3cf;
+  margin-top: 35px;
+}
+
+#final-score #play-again {
+  margin-top: 65px;
 }
