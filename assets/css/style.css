@@ -1,6 +1,7 @@
 body {
   width: 100%;
   background-image: url('../images/dark-blue-wallpaper.jpg');
+  font-family: 'Mina', sans-serif;
 }
 
 img {
@@ -9,6 +10,7 @@ img {
 }
 
 .container-fluid h1 {
+  font-family: 'Cinzel', sans-serif;
   font-size: 80px;
   margin-top: 15px;
   font-weight: bold;
