@@ -9,8 +9,7 @@ img {
 }
 
 .container-fluid h1 {
-  font-size: 80px;
-  margin-top: 15px;
+  font-size: 90px;
   font-weight: bold;
   color: #33476d;
   text-shadow: 0 1px 0 white, 0 -1px 0 white, 1px 0 0 white, -1px 0 0 white;
@@ -19,17 +18,17 @@ img {
 .container-fluid {
   text-align: center;
   background: #3cf;
-  border-bottom: 8px solid white;
+  border-bottom: 6px solid white;
   padding: 35px;
   width: 100%;
   padding: 15px;
-  height: 160px;
+  height: 180px;
 }
 
 #subheader {
   color: #3cf;
   text-align: center;
-  font-size: 50px;
+  font-size: 40px;
   margin-top: 110px;
   text-shadow: 0 1px 0 white, 0 -1px 0 white, 1px 0 0 white, -1px 0 0 white;
 }
