@@ -91,14 +91,18 @@ img {
   float: left;
 }
 
-#answer-choices h2 {
+#final-score {
+  text-align: center;
+}
+
+#final-score h2 {
   font-size: 50px;
   color: #3cf;
   margin-bottom: 25px;
   text-shadow: 0 1px 0 white, 0 -1px 0 white, 1px 0 0 white, -1px 0 0 white;
 }
 
-#answer-choices p {
+#final-score p {
   font-size: 35px;
   color: #3cf;
 }

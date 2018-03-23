@@ -53,7 +53,7 @@ $(document).ready(function() {
       img: 'assets/images/rocky-stallone.jpg'
     }),
     (questionSeven = {
-      question: 'What NBA team won the NBA Championship in 2016?',
+      question: 'What team won the NBA Championship in 2016?',
       answer: 3,
       choices: ['Spurs', 'Celtics', 'Warriors', 'Cavaliers'],
       img: 'assets/images/cavs-logo.jpeg'
@@ -137,6 +137,7 @@ $(document).ready(function() {
     } else {
       $('.main-content').empty();
       endGame();
+      resetGame();
     }
   };
 
@@ -213,7 +214,7 @@ $(document).ready(function() {
   // end the game and show the final score to the player
   var endGame = function() {
     $('.main-content').empty();
-    $('#answer-choices').append(
+    $('#final-score').prepend(
       '<h2>Your Score:</h2>' +
         '<p>Questions Answered: ' +
         amtAnswered +
@@ -225,5 +226,26 @@ $(document).ready(function() {
         amtWrong +
         '</p>'
     );
+    $('#play-again').text('Click to Play Again!');
+  };
+
+  // reset game function empties the final score div and starts the game over correctly, but won't allow player to play a 3rd time
+  var resetGame = function() {
+    $('#play-again').click(function() {
+      // added this for 2nd time playing through, problem is they won't have option to play a 3rd time
+      $('#final-score').empty();
+
+      amtCorrect = 0;
+
+      amtWrong = 0;
+
+      amtAnswered = 0;
+
+      currentQuestion = 0;
+
+      questionTimer = 11;
+
+      showQuestions();
+    });
   };
 });
